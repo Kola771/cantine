@@ -2,18 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AdminEntreprise;
+use App\Models\roles;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class AdminEntrepriseController extends Controller
+class RolesController extends Controller
 {
+    /**
+     * Function pour charger la page des utililsateurs
+     */
+    public function accueilUser()
+    {
+        return Inertia::render('Users/Accueil/PageAccueil');
+    }
+
+    /**
+     * Function pour charger la page du dashboard administrateur
+     */
+    public function dashboard()
+    {
+        return Inertia::render('Dashboard');
+    }
+
+    /**
+     * Function pour charger la page login
+     */
+    public function logIn()
+    {
+        return Inertia::render('Auth/Login');
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('Super/AdminEnterprise/Create');
+        //
     }
 
     /**
@@ -35,7 +58,7 @@ class AdminEntrepriseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AdminEntreprise $adminEntreprise)
+    public function show(roles $roles)
     {
         //
     }
@@ -43,7 +66,7 @@ class AdminEntrepriseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AdminEntreprise $adminEntreprise)
+    public function edit(roles $roles)
     {
         //
     }
@@ -51,7 +74,7 @@ class AdminEntrepriseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AdminEntreprise $adminEntreprise)
+    public function update(Request $request, roles $roles)
     {
         //
     }
@@ -59,7 +82,7 @@ class AdminEntrepriseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AdminEntreprise $adminEntreprise)
+    public function destroy(roles $roles)
     {
         //
     }

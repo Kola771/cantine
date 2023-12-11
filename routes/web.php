@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminEntrepriseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RolesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -16,18 +18,26 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/accueilUser', [RolesController::class, 'accueilUser'])->middleware(['auth', 'verified'])->name('accueilUser');
+
+Route::get('/dashboard', [RolesController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/', [RolesController::class, 'logIn'])->name('logIn');
+
+Route::get('/adminEnterprise', [AdminEntrepriseController::class, 'index'])->name('adminEnterprise');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
