@@ -89,7 +89,7 @@ class AuthenticatedSessionController extends Controller
             $dateEndLicence = $getAdminEntreprise->licence_year_end;
             // Date actuelle
             $dateNow = date("Y-m-d");
-            if($dateStartLicence === null || $dateEndLicence === null)
+            if($dateStartLicence === null && $dateEndLicence === null)
             {
                 return (["message" => "Vous pouvez vous connecter en tant que Super Administrateur !!!"]); 
             } else {

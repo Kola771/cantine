@@ -28,8 +28,8 @@ import { Link } from '@inertiajs/vue3';
                     :class="'bg-red-500 lg:w-[50px] lg:h-[50px] rounded-full flex items-center justify-center uppercase text-white font-bold'">
                     {{ $page.props.auth.user.lastname[0] }}{{ $page.props.auth.user.firstname[0] }}</div>
                 <div class="flex flex-col items-center">
-                    <p class="font-medium group-hover:text-orange-600 text-[12px] text-black text-white">{{ $page.props.auth.user.firstname }} {{ $page.props.auth.user.lastname[0] }}.</p>
-                    <p class="font-medium group-hover:text-orange-600 text-[12px] text-black text-white">Connecté(e)</p>
+                    <p class="font-medium group-hover:text-orange-600 text-[12px] text-black text-black">{{ $page.props.auth.user.firstname }} {{ $page.props.auth.user.lastname[0] }}.</p>
+                    <p class="font-medium group-hover:text-orange-600 text-[12px] text-black text-black">Connecté(e)</p>
                 </div>
             </a>
             <h1 class="font-bold text-lg shadow-xl px-2 border-red-300 border-[1px] rounded-2xl">
@@ -37,7 +37,7 @@ import { Link } from '@inertiajs/vue3';
         </div>
         <hr class="my-2 border-slate-700">
         <div id="menu" class="flex flex-col space-y-2 my-5">
-            <a href="/dashboard" class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-3 px-2 group">
+            <Link href="/dashboard" class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-3 px-2 group">
                 <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 space-x-2 items-center">
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -54,7 +54,7 @@ import { Link } from '@inertiajs/vue3';
                     </div>
 
                 </div>
-            </a>
+            </Link>
             <a href="#" class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-3 px-2 group" @click="navUser()">
                 <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 space-x-2 items-center">
                     <div>
@@ -85,7 +85,7 @@ import { Link } from '@inertiajs/vue3';
                 </div>
             </a>
             <div id="idUser" class="hidden flex flex-col gap-2 my-5 mx-auto w-[80%]">
-                <a :href="route('adminEnterprise')" class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-2 px-2 group">
+                <Link :href="route('adminEnterprise')" class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-2 px-2 group">
                     <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 space-x-2 items-center">
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -100,7 +100,7 @@ import { Link } from '@inertiajs/vue3';
                             </p>
                         </div>
                     </div>
-                </a>
+                </Link>
                 <a href="#" class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-2 px-2 group">
                     <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 space-x-2 items-center">
                         <div>

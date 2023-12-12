@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AdminEntreprise extends Model
+class LicenceHistorique extends Model
 {
     use HasFactory;
-    
     protected $fillable = [
-        "entreprise_name",
-        "admin_lastname",
-        "admin_firstname",
+        "enterprise_name",
+        "etat",
         "licence_year_start",
         "licence_year_end",
     ];
