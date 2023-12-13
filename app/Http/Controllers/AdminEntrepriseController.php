@@ -6,6 +6,8 @@ use App\Models\AdminEntreprise;
 use App\Models\LicenceHistorique;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Mail\MonMessage;
+use Illuminate\Support\Facades\Mail;
 
 class AdminEntrepriseController extends Controller
 {
@@ -75,6 +77,16 @@ class AdminEntrepriseController extends Controller
         //
     }
 
+    public function createAdminUser(Request $request)
+    {
+        // dd($request);
+        $destinataire = 'azankpoeric40@gmail.com';
+
+        Mail::to($destinataire)->send(new MonMessage());
+
+        return 'E-mail envoyé avec succès';
+    }
+
     /**
      * Display the specified resource.
      */
@@ -82,8 +94,7 @@ class AdminEntrepriseController extends Controller
     {
         // Vérifions si nous trouvons une occurence
         $getEntreprise = AdminEntreprise::where("id", $id)->first();
-        if($getEntreprise !== null)
-        {
+        if ($getEntreprise !== null) {
             return Inertia::render('Super/AdminEnterprise/CreateAdmin', [
                 "donnees" => $getEntreprise
             ]);
@@ -96,8 +107,7 @@ class AdminEntrepriseController extends Controller
     public function edit(Request $request, AdminEntreprise $adminEntreprise)
     {
         $getone = $adminEntreprise::where("id", $request->id)->first();
-        if($getone !== null)
-        {
+        if ($getone !== null) {
             return response()->json($getone);
         } else {
             return response()->json(["error" => "L'administrateur Entreprise n'existe pas !!!"]);
@@ -112,10 +122,8 @@ class AdminEntrepriseController extends Controller
         $bool = false;
         // Je vérifie si le nom d'entreprise entré par l'utilisateur existe déjà dans la base de données
         $getEntreprise = AdminEntreprise::where("entreprise_name", $request->enterprise)->first();
-        if($getEntreprise !== null)
-        {
-            if($getEntreprise->id === intval($request->tableau["id"]))
-            {
+        if ($getEntreprise !== null) {
+            if ($getEntreprise->id === intval($request->tableau["id"])) {
                 $bool = true;
             } else {
                 return response()->json(["error" => "Ce nom d'entreprise existe déjà !!!"]);
@@ -124,24 +132,21 @@ class AdminEntrepriseController extends Controller
             $bool = true;
         }
 
-        if($bool)
-        {
+        if ($bool) {
             $allHistorique = LicenceHistorique::where("enterprise_name", $request->tableau["entreprise_name"])->get()->toArray();
-            if(count($allHistorique) > 0)
-            {
-                foreach($allHistorique as $key => $value)
-                {
+            if (count($allHistorique) > 0) {
+                foreach ($allHistorique as $key => $value) {
                     // Modification du nom de l'entreprise dans la table LicenceHistorique
                     try {
                         LicenceHistorique::where("id", intval($value["id"]))->update([
                             "enterprise_name" => trim($request->enterprise)
                         ]);
-                    } catch(\Exception $e) {
+                    } catch (\Exception $e) {
                         return response()->json(["error" => "Une erreur est subvenue lors de l'opération !!!"]);
                     }
                 }
             }
-    
+
             try {
                 LicenceHistorique::create([
                     "enterprise_name" => trim($request->enterprise),
@@ -149,7 +154,7 @@ class AdminEntrepriseController extends Controller
                     "licence_year_start" => $request->start,
                     "licence_year_end" => $request->end
                 ]);
-                
+
                 // modification de l'administrateur d'entreprise
                 AdminEntreprise::where("id", intval($request->tableau["id"]))->update([
                     "entreprise_name" => trim($request->enterprise),
@@ -158,7 +163,7 @@ class AdminEntrepriseController extends Controller
                     "licence_year_start" => $request->start,
                     "licence_year_end" => $request->end
                 ]);
-    
+
                 return response()->json(["success" => "Données de l'administrateur modifiées avec succès !!!"]);
             } catch (\Exception $e) {
                 return response()->json(["error" => "Une erreur est subvenue lors de l'opération !!!"]);
@@ -173,12 +178,11 @@ class AdminEntrepriseController extends Controller
     {
         // Vérifions si nous trouvons une occurence
         $getEntreprise = AdminEntreprise::where("id", $request->id)->first();
-        if($getEntreprise !== null)
-        {
+        if ($getEntreprise !== null) {
             try {
                 $getEntreprise->delete();
                 return response()->json(["success" => "Administrateur supprimé avec succès !!!"]);
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 return response()->json(["error" => "Une erreur est subvenue lors de la suppression !!!"]);
             }
         } else {

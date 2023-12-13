@@ -45,6 +45,7 @@ Route::get('/getInfoAdminEnt', [AdminEntrepriseController::class, 'edit'])->name
 Route::get('/showAdminEnt/{id}', [AdminEntrepriseController::class, 'show'])->name('showAdmin');
 Route::get('/getInfoAdminEnt', [AdminEntrepriseController::class, 'edit'])->name('getInfoAdminEnt');
 Route::delete('/delSupAdminEnt', [AdminEntrepriseController::class, 'destroy'])->name('delSupAdminEnt');
+Route::post('/createAdminUser', [AdminEntrepriseController::class, 'createAdminUser'])->name('createAdminUser');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
