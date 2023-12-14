@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminEntrepriseController;
+use App\Http\Controllers\LicenceHistoriqueController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RolesController;
 use Illuminate\Foundation\Application;
@@ -35,6 +36,8 @@ Route::get('/accueilUser', [RolesController::class, 'accueilUser'])->middleware(
 
 Route::get('/dashboard', [RolesController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/gestionUserIndex', [LicenceHistoriqueController::class, 'gestionUserIndex'])->middleware(['auth', 'verified'])->name('gestionUserIndex');
+
 Route::get('/', [RolesController::class, 'logIn'])->name('logIn');
 
 Route::get('/adminEnterprise', [AdminEntrepriseController::class, 'index'])->name('adminEnterprise');
@@ -46,6 +49,7 @@ Route::get('/showAdminEnt/{id}', [AdminEntrepriseController::class, 'show'])->na
 Route::get('/getInfoAdminEnt', [AdminEntrepriseController::class, 'edit'])->name('getInfoAdminEnt');
 Route::delete('/delSupAdminEnt', [AdminEntrepriseController::class, 'destroy'])->name('delSupAdminEnt');
 Route::post('/createAdminUser', [AdminEntrepriseController::class, 'createAdminUser'])->name('createAdminUser');
+Route::post('/searchInputAdminEnt', [AdminEntrepriseController::class, 'searchInputAdminEnt'])->name('searchInputAdminEnt');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

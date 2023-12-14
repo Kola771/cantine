@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LicenceHistorique;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class LicenceHistoriqueController extends Controller
 {
@@ -13,6 +14,14 @@ class LicenceHistoriqueController extends Controller
     public function index()
     {
         //
+    }
+    
+    /**
+     * Function pour charger la page de gestion des utilisateurs
+     */
+    public function gestionUserIndex()
+    {
+        return Inertia::render('Super/GestionUser/Index');
     }
 
     /**

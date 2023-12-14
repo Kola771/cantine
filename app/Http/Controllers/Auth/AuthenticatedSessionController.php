@@ -60,7 +60,7 @@ class AuthenticatedSessionController extends Controller
                             case "superadministrateur":
                                 return response()->json(["success" => "/dashboard"]);
                             case "administrateur":
-                                break;
+                                return response()->json(["success" => "/accueilUser"]);
                             case "comptabilite":
                                 break;
                             case "utilisateur":

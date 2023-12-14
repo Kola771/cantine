@@ -101,7 +101,7 @@ import { Link } from '@inertiajs/vue3';
                         </div>
                     </div>
                 </Link>
-                <a href="#" class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-2 px-2 group">
+                <Link :href="route('gestionUserIndex')" class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-2 px-2 group">
                     <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 space-x-2 items-center">
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -116,7 +116,7 @@ import { Link } from '@inertiajs/vue3';
                             </p>
                         </div>
                     </div>
-                </a>
+                </Link>
             </div>
             <a href="/" class="hover:bg-white/10 transition duration-150 ease-linear rounded-lg py-3 px-2 group">
                 <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 space-x-2 items-center">

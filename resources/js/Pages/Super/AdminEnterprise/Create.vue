@@ -24,7 +24,7 @@ import Swal from 'sweetalert2';
 
                     <div class="flex justify-center items-center lg:gap-2 lg:basis-[84%]">
                         <input type="text" class="border-none w-full lg:py-2.5 outline-none"
-                            placeholder="Recherche par entreprise" v-model="search">
+                            placeholder="Recherche par entreprise" v-model="search" @input="searchInput">
                     </div>
                     <div class="cursor-pointer lg:basis-[8%] flex justify-center items-center hover:bg-blue-800 hover:text-white"
                         @click="reset">
@@ -40,7 +40,7 @@ import Swal from 'sweetalert2';
                 <legend
                     class="border bg-amber-600 text-white lg:py-2 lg:px-10 flex justify-center items-center lg:w-[30%] rounded-lg">
                     Liste des administrateurs par entreprise</legend>
-                <div class="mx-auto lg:p-3 flex lg:gap-x-14 lg:gap-y-8 flex-wrap">
+                <div class="mx-auto lg:p-3 flex lg:gap-x-14 lg:gap-y-8 flex-wrap" v-if="allAdmins.length >  0">
                     <div class="relative flex w-full max-w-[26rem] flex-col rounded-xl bg-white bg-clip-border text-gray-700 border-gray-300 border-[1px] hover:border-orange-600 basis-[30%] cursor-pointer"
                         v-for="(el, index) in allAdmins" :key="index" @click="showFonction(el.id)">
                         <div class="flex items-center lg:gap-2">
@@ -58,14 +58,14 @@ import Swal from 'sweetalert2';
                                 </div>
                             </div>
                         </div>
-                        <div :id="'id-' + el.id" class="z-50 hidden absolute top-16 left-52 bg-gray-100 lg:w-[180px]">
+                        <div :id="'id-' + el.id" class="z-50 hidden absolute top-16 left-52 bg-gray-200 rounded lg:w-[180px] shadow-2xl">
 
                             <Link :href="route('showAdmin', el.id)"
                                 class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 transition duration-150 ease-in-out cursor-pointer">
                             Créer son compte utilisateur
                             </Link>
 
-                            <Link @click="updateAdminstrator(el.id)"
+                            <a @click="updateAdminstrator(el.id)"
                                 class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 transition duration-150 ease-in-out cursor-pointer flex items-center justify-between border-black border-y-[1px]">
                             Modifier
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -73,17 +73,28 @@ import Swal from 'sweetalert2';
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                             </svg>
-                            </Link>
+                            </a>
 
-                            <Link @click="delSup(el.id)"
+                            <a @click="delSup(el.id)"
                                 class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 transition duration-150 ease-in-out cursor-pointer flex items-center justify-between">
                             Supprimer
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="red" class="font-bold w-4 h-4">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                            </Link>
+                            </a>
                         </div>
+                    </div>
+                </div>
+                <div v-else class="flex justify-center items-center flex-col">
+                    <span class="border-gray-400 border-2 rounded-full p-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="gray" class="font-bold w-10 h-10">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                    </span>
+                    <div class="font-bold text-2xl text-gray-600">
+                        Aucunes données disponibles !
                     </div>
                 </div>
             </fieldset>
@@ -231,6 +242,7 @@ export default
                 color: null,
                 data: [],
                 allAdmins: [],
+                search: null
             }
         },
 
@@ -420,6 +432,23 @@ export default
                     }
                 });
             },
+
+            // Fonction pour rechercher les adminstrateurs entreprises
+            searchInput()
+            {
+                axios.post(route('searchInputAdminEnt', {
+                    search: this.search
+                })).then(response => {
+                    this.allAdmins = response.data
+                })
+            },
+            
+            // Fonction pour vider le champ de recherche
+            reset()
+            {
+                this.search = null;
+                this.onLoad();
+            }
         },
         mounted() {
             this.onLoad();

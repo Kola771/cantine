@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\AdminEntreprise;
 use App\Models\LicenceHistorique;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use App\Mail\MonMessage;
 use Illuminate\Support\Facades\Mail;
@@ -77,14 +79,57 @@ class AdminEntrepriseController extends Controller
         //
     }
 
+    // Fonction pour créer des comptes utilisateurs pour les administrateurs entreprises
     public function createAdminUser(Request $request)
     {
-        // dd($request);
-        $destinataire = 'azankpoeric40@gmail.com';
+        $form = $request->form;
+        // vérifions si l'email de l'utilisateur se trouve déjà dans la table users
+        $getEmail = User::where("email", $form["email"])->first();
+        if ($getEmail !== null) {
+            return response()->json(["error" => "Un utilisateur utilise déjà cet email."]);
+        } else {
+            // Création d'un mot de passe
+            $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-        Mail::to($destinataire)->send(new MonMessage());
+            // Longueur du caractère
+            $longueurCaracteres = strlen($caracteres);
 
-        return 'E-mail envoyé avec succès';
+            // Initialiser le mot de passe
+            $motDePasse = '';
+
+            // Générer le mot de passe
+            for ($i = 0; $i < 12; $i++) {
+                $motDePasse .= $caracteres[rand(0, $longueurCaracteres - 1)];
+            }
+            // Mot de passe par défaut actuellement
+            $motDePasse = "azerty123";
+            // Création du compte
+            try {
+                User::create([
+                    'lastname' => $form["lastname"],
+                    'firstname' => $form["firstname"],
+                    'email' => $form["email"],
+                    'matricule' => $form["matricule"],
+                    'password' => Hash::make($motDePasse),
+                    'idRole' => 2,
+                    'idAdmin' => $form["idAdmin"],
+                ]);
+                return response()->json(["success" => "Compte utilisateur créé avec succès."]);
+            } catch (\Throwable $th) {
+                return response()->json(["error" => "Une erreur est subvenue lors de l'enrégistrement !"]);
+            }
+        }
+        // $destinataire = 'azankpoeric40@gmail.com';
+
+        // Mail::to($destinataire)->send(new MonMessage());
+
+        // return 'E-mail envoyé avec succès';
+    }
+
+    // Fonction pour rechercher toutes les occurrences d'un élement dans la colonne entreprise_name
+    public function searchInputAdminEnt(Request $request) {
+        $getEntreprise = AdminEntreprise::where("entreprise_name", "LIKE", "%{$request->search}%")->get()->toArray();
+        return response()->json($getEntreprise);
     }
 
     /**
