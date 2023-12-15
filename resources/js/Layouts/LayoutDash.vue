@@ -202,3 +202,25 @@ export default {
     },
 };
 </script>
+
+<style>
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  background-color: #fff;
+  width: 8px;
+}
+
+/* Couleur de la poignée (thumb) */
+::-webkit-scrollbar-thumb {
+  background-color: rgb(173, 171, 171);
+  border-radius: .5em;
+}
+
+/* Couleur de la poignée lorsqu'elle est survolée */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #ceccca;
+}
+</style>

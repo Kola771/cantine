@@ -33,11 +33,8 @@ use Inertia\Inertia;
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/accueilUser', [RolesController::class, 'accueilUser'])->middleware(['auth', 'verified'])->name('accueilUser');
-
 Route::get('/dashboard', [RolesController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::get('/gestionUserIndex', [LicenceHistoriqueController::class, 'gestionUserIndex'])->middleware(['auth', 'verified'])->name('gestionUserIndex');
-
 Route::get('/', [RolesController::class, 'logIn'])->name('logIn');
 
 Route::get('/adminEnterprise', [AdminEntrepriseController::class, 'index'])->name('adminEnterprise');
@@ -50,6 +47,8 @@ Route::get('/getInfoAdminEnt', [AdminEntrepriseController::class, 'edit'])->name
 Route::delete('/delSupAdminEnt', [AdminEntrepriseController::class, 'destroy'])->name('delSupAdminEnt');
 Route::post('/createAdminUser', [AdminEntrepriseController::class, 'createAdminUser'])->name('createAdminUser');
 Route::post('/searchInputAdminEnt', [AdminEntrepriseController::class, 'searchInputAdminEnt'])->name('searchInputAdminEnt');
+
+Route::post('/createUser', [LicenceHistoriqueController::class, 'createUser'])->name('createUser');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
