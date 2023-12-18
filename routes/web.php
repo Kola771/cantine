@@ -49,6 +49,9 @@ Route::post('/createAdminUser', [AdminEntrepriseController::class, 'createAdminU
 Route::post('/searchInputAdminEnt', [AdminEntrepriseController::class, 'searchInputAdminEnt'])->name('searchInputAdminEnt');
 
 Route::post('/createUser', [LicenceHistoriqueController::class, 'createUser'])->name('createUser');
+Route::post('/createUserNew', [LicenceHistoriqueController::class, 'createUserNew'])->name('createUserNew');
+Route::get('/indexUser', [LicenceHistoriqueController::class, 'indexUser'])->name('indexUser');
+Route::delete('/deleteUser', [LicenceHistoriqueController::class, 'deleteUser'])->name('deleteUser');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

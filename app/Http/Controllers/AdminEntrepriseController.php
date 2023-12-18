@@ -88,7 +88,6 @@ class AdminEntrepriseController extends Controller
         if ($getEmail !== null) {
             return response()->json(["error" => "Un utilisateur utilise déjà cet email."]);
         } else {
-            // Création d'un mot de passe
             $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
             // Longueur du caractère
@@ -103,6 +102,7 @@ class AdminEntrepriseController extends Controller
             }
             // Mot de passe par défaut actuellement
             $motDePasse = "azerty123";
+            // Création d'un mot de passe
             // Création du compte
             try {
                 User::create([
