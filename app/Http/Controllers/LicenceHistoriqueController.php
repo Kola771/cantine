@@ -25,17 +25,16 @@ class LicenceHistoriqueController extends Controller
     public function indexUser()
     {
         $all = User::all();
-        $count = count($all) / 10;
-        dd($count);
-        $users = User::select("users.id", "users.lastname", "users.firstname", "users.email", "users.matricule", "roles.role_name", "admin_entreprises.entreprise_name", "roles.id as idRoleName")
+        $count = ceil(count($all) / 10);
+        $users = User::select("users.id", "users.lastname", "users.firstname", "users.email", "users.matricule", "roles.role_name", "admin_entreprises.entreprise_name", "admin_entreprises.id as idAdm", "roles.id as idRoleName")
             ->join("roles", "roles.id", "=", "users.idRole")
             ->join("admin_entreprises", "admin_entreprises.id", "=", "users.idAdmin")
+            ->orderBy("users.lastname")
+            ->limit(10)
             ->get()->toArray();
         $roles = roles::all()->toArray();
         $entreprise = AdminEntreprise::all()->toArray();
-
-
-        return response()->json(["users" => $users, "roles" => $roles, "entreprise" => $entreprise]);
+        return response()->json(["users" => $users, "roles" => $roles, "entreprise" => $entreprise, "count" => $count]);
     }
 
     /**
@@ -131,6 +130,49 @@ class LicenceHistoriqueController extends Controller
         }
     }
 
+    // Fonction pour modifier les données d'un compte utilisateur
+    public function updateUserNew(Request $request)
+    {
+        $bool = false;
+        $identifiantAdmin = null;
+        if (isset($request->entreprise)) {
+            $identifiantAdmin = intval($request->entreprise);
+        } else {
+            $identifiantAdmin = Auth::user()->idAdmin;
+        }
+        $verification = User::where("email", $request->email)->first();
+        if ($verification !== null) {
+            if ($verification->id === intval($request->tableau["id"])) {
+                $bool = true;
+            } else {
+                return response()->json(["error" => "Un utilisateur portant cet email existe déjà dans la base de données."]);
+            }
+        } else {
+            $bool = true;
+        }
+
+        if ($bool) {
+            $matricule = null;
+            if ($request->matricule) {
+                $matricule = $request->matricule;
+            }
+            try {
+                User::where("id", intval($request->tableau["id"]))
+                    ->update([
+                        'lastname' => $request->nom,
+                        'firstname' => $request->prenom,
+                        'email' => $request->email,
+                        'matricule' => $matricule,
+                        'idRole' => $request->role,
+                        'idAdmin' => $identifiantAdmin,
+                    ]);
+                    return response()->json(["success" => "Modification réussie !"]);
+            } catch (\Throwable $th) {
+                return response()->json(["error" => "Une erreur est subvenue lors de la modification !"]);
+            }
+        }
+    }
+
     // Fonction pour créer un compte utilisateur
     public function createUserNew(Request $request)
     {
@@ -141,8 +183,7 @@ class LicenceHistoriqueController extends Controller
             $identifiantAdmin = Auth::user()->idAdmin;
         }
         $verification = User::where("email", $request->email)->first();
-        if($verification !== null)
-        {
+        if ($verification !== null) {
             return response()->json(["error" => "Un utilisateur portant cet email existe déjà dans la base de données."]);
         } else {
             // Création d'un mot de passe
@@ -162,8 +203,7 @@ class LicenceHistoriqueController extends Controller
             $motDePasse = "azerty123";
             // Création du compte
             $matricule = null;
-            if($request->matricule)
-            {
+            if ($request->matricule) {
                 $matricule = $request->matricule;
             }
             try {
@@ -181,6 +221,39 @@ class LicenceHistoriqueController extends Controller
                 return response()->json(["error" => "Une erreur est subvenue lors de l'enrégistrement !"]);
             }
         }
+    }
+
+    public function paginationUser(Request $request)
+    {
+        $after = null;
+        if (intval($request->number) === 1) {
+            $after = 0;
+        } else {
+            $after = 3 * (intval($request->number) - 1);
+        }
+        $users = User::select("users.id", "users.lastname", "users.firstname", "users.email", "users.matricule", "roles.role_name", "admin_entreprises.entreprise_name", "admin_entreprises.id as idAdm", "roles.id as idRoleName")
+            ->join("roles", "roles.id", "=", "users.idRole")
+            ->join("admin_entreprises", "admin_entreprises.id", "=", "users.idAdmin")
+            ->orderBy("users.lastname")
+            ->limit(10)
+            ->offset($after)
+            ->get()->toArray();
+        return response()->json(["users" => $users]);
+    }
+
+    // Fonction pour rechercher des occurrences d'un élément dans certains champs
+    public function search(Request $request)
+    {
+        $users = User::select("users.id", "users.lastname", "users.firstname", "users.email", "users.matricule", "roles.role_name", "admin_entreprises.entreprise_name", "admin_entreprises.id as idAdm", "roles.id as idRoleName")
+        ->join("roles", "roles.id", "=", "users.idRole")
+        ->join("admin_entreprises", "admin_entreprises.id", "=", "users.idAdmin")
+        ->where("users.lastname", "LIKE", "%{$request->search}%")
+        ->orWhere("users.firstname", "LIKE", "%{$request->search}%")
+        ->orWhere("users.email", "LIKE", "%{$request->search}%")
+        ->orWhere("users.matricule", "LIKE", "%{$request->search}%")
+        ->orderBy("users.lastname")
+        ->get()->toArray();
+        return response()->json(["users" => $users]);
     }
 
     /**
@@ -234,11 +307,9 @@ class LicenceHistoriqueController extends Controller
     // Fonction pour supprimer un ou plusieurs utilisateurs
     public function deleteUser(Request $request, User $user)
     {
-        foreach($request->tableau as $key => $value)
-        {
+        foreach ($request->tableau as $key => $value) {
             $requete = User::where("id", intval($value["id"]))->first();
-            if($requete !== null)
-            {
+            if ($requete !== null) {
                 try {
                     $requete->delete();
                 } catch (\Throwable $th) {

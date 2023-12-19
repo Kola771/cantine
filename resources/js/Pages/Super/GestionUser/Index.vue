@@ -66,38 +66,25 @@ import Swal from 'sweetalert2';
                             <transition>
                                 <div v-if="variableBool1"
                                     class="z-50 absolute lg:top-10 lg:left-[580px] bg-white rounded lg:w-[125px] shadow-2xl lg:max-h-[184px] overflow-y-auto">
-                                    <span
+                                    <span v-for="(el, i) in pagination" :key="i" @click="paginations(el)"
                                         class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 transition duration-150 ease-in-out cursor-pointer flex items-center justify-between border-gray-100 border-b-[1px]">
-                                        Page 1
-                                    </span>
-                                    <span
-                                        class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 transition duration-150 ease-in-out cursor-pointer flex items-center justify-between">
-                                        Page 2
-                                    </span>
-                                    <span
-                                        class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 transition duration-150 ease-in-out cursor-pointer flex items-center justify-between border-gray-100 border-b-[1px]">
-                                        Page 3
-                                    </span>
-                                    <span
-                                        class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 transition duration-150 ease-in-out cursor-pointer flex items-center justify-between">
-                                        Page 4
-                                    </span>
-                                    <span
-                                        class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 transition duration-150 ease-in-out cursor-pointer flex items-center justify-between border-gray-100 border-b-[1px]">
-                                        Page 5
-                                    </span>
-                                    <span
-                                        class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-200 focus:outline-none focus:bg-gray-300 transition duration-150 ease-in-out cursor-pointer flex items-center justify-between">
-                                        Page 6
+                                        Page {{ el }}
                                     </span>
                                 </div>
                             </transition>
                         </div>
                     </div>
-                    <div class="basis-[20%] flex justify-end">
+                    <div class="basis-[20%] flex border-gray-400 border-[1px] rounded-full">
                         <input type="text"
-                            class="lg:basis-[25%] rounded-full outline-none focus:border-gray-500 focus:ring-gray-500 lg:py-1"
-                            placeholder="Recherchez un nom">
+                            class="lg:basis-[85%] rounded-l-full outline-none focus:border-gray-500 focus:ring-gray-500 lg:py-1 border-none"
+                            placeholder="Recherchez..." v-model="word" @input="search">
+                        <div class="cursor-pointer lg:basis-[15%] flex justify-center items-center hover:bg-orange-600 hover:text-white bg-white rounded-r-full"
+                            @click="resetSearch">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
                 <div class="max-h-[500px] overflow-y-auto">
@@ -130,7 +117,7 @@ import Swal from 'sweetalert2';
             </div>
             <div class="rounded-b lg:py-2 lg:px-2 flex justify-between items-center bg-gray-200">
                 <span class="font-bold">Total de données : </span>
-                <span class="bg-blue-700 text-sm text-white lg:py-1.5 lg:px-8 rounded">{{users.length}}</span>
+                <span class="bg-blue-700 text-sm text-white lg:py-1.5 lg:px-8 rounded">{{ users.length }}</span>
             </div>
         </div>
     </div>
@@ -145,7 +132,7 @@ import Swal from 'sweetalert2';
             Création d'un compte utilisateur
         </div>
         <form @submit.prevent="createForm" class="flex p-6 flex-col gap-4">
-            <div v-if="message" :class="'my-2 md:my-4 text-sm text-center font-bold ' + color">{{ message }}</div>
+            <div v-if="message" :class="'mb-2 text-sm text-center font-bold ' + color">{{ message }}</div>
             <div class="lg:basis-[100%]">
                 <input rows="4" class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-sm
               sm:leading-5 resize-none focus:outline-none focus:border-gray-200" placeholder="Nom de famille*"
@@ -193,6 +180,73 @@ import Swal from 'sweetalert2';
                 </button>
                 <div class="absolute top-2 right-2 cursor-pointer lg:w-[25px] lg:h-[25px] flex justify-center items-center bg-gray-300 hover:bg-gray-500 hover:text-white rounded-full"
                     @click="hiddenCreate">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="menuMiniUp" class="hidden relative flex justify-center items-center z-50">
+        <div class="w-full h-full bg-gray-900 bg-opacity-80 top-0 fixed sticky-0">
+        </div>
+    </div>
+    <div id="formHiddenUp"
+        class="hidden absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 shadow-2xl bg-white rounded-lg lg:w-[25%] flex flex-col gap-2 z-50">
+        <div class="bg-amber-600 text-white text-center lg:p-2 rounded-t-lg">
+            Modification des données d'un compte utilisateur
+        </div>
+        <form @submit.prevent="updateForm" class="flex p-6 flex-col gap-4">
+            <div v-if="message" :class="'mb-2 text-sm text-center font-bold ' + color">{{ message }}</div>
+            <div class="lg:basis-[100%]">
+                <input rows="4" class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-sm
+              sm:leading-5 resize-none focus:outline-none focus:border-gray-200" placeholder="Nom de famille*"
+                    v-model="nom" required />
+            </div>
+            <div class="lg:basis-[100%]">
+                <input rows="4" class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-sm
+              sm:leading-5 resize-none focus:outline-none focus:border-gray-200" placeholder="Prénoms*"
+                    v-model="prenom" required />
+            </div>
+            <div class="lg:basis-[100%]">
+                <input rows="4" class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-sm
+              sm:leading-5 resize-none focus:outline-none focus:border-gray-200" placeholder="Matricule"
+                    v-model="matricule" />
+            </div>
+            <div class="lg:basis-[100%]">
+                <input rows="4" type="email" class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-sm
+      sm:leading-5 resize-none focus:outline-none focus:border-gray-200" placeholder="Adresse électronique*"
+                    v-model="email" required />
+            </div>
+            <div class="lg:basis-[100%]">
+                <select v-model="roleName" class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-sm
+      sm:leading-5 resize-none focus:outline-none focus:border-gray-200" required>
+                    <option selected disabled>Sélectionnez un rôle</option>
+                    <option v-for="(el) in roles" :value="el.id">{{ el.role_name }}</option>
+                </select>
+            </div>
+            <div class="lg:basis-[100%]" v-if="$page.props.auth.user.idRole === 1">
+                <select v-model="entreprises" class="w-full border-2 rounded-md px-4 py-2 leading-5 transition duration-150 ease-in-out sm:text-sm
+      sm:leading-5 resize-none focus:outline-none focus:border-gray-200" required>
+                    <option selected disabled>Sélectionnez une entreprise</option>
+                    <option v-for="(el) in entreprise" :value="el.id">{{ el.entreprise_name }}</option>
+                </select>
+            </div>
+            <div class="flex items-center lg:justify-end">
+                <button type="submit"
+                    class="flex justify-center items-center bg-green-700 hover:bg-green-800 focus:outline-none focus:shadow-outline-orange text-white py-2 px-4 rounded-md transition duration-300 gap-2">
+                    Modifier <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" id="send"
+                        fill="#fff">
+                        <path fill="none" d="M0 0h24v24H0V0z"></path>
+                        <path
+                            d="M3.4 20.4l17.45-7.48c.81-.35.81-1.49 0-1.84L3.4 3.6c-.66-.29-1.39.2-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z">
+                        </path>
+                    </svg>
+                </button>
+                <div class="absolute top-2 right-2 cursor-pointer lg:w-[25px] lg:h-[25px] flex justify-center items-center bg-gray-300 hover:bg-gray-500 hover:text-white rounded-full"
+                    @click="hiddenUp">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -269,10 +323,83 @@ export default
                 prenom: null,
                 email: null,
                 matricule: null,
+                pagination: null,
+                word: null,
             }
         },
 
         methods: {
+            // Fonction pour vider la barre de recherche et faire un rafraichissement
+            resetSearch()
+            {
+                this.word = null;
+                this.onLoad();
+            },
+
+            // Fonction pour rechercher
+            search() {
+                if (this.word.trim() !== "") {
+                    axios.get(route("search", {
+                        search: this.word
+                    })).then(response => {
+                        this.users = response.data.users;
+                    });
+                }
+            },
+
+            // Fonction pour faire la modification des données d'un utilisateur
+            updateForm() {
+                if (this.nom.trim() === "" || this.prenom.trim() === "") {
+                    this.color = 'text-red-500';
+                    this.message = "Veuillez bien remplir tous les champs !!!";
+                } else {
+                    this.color = null;
+                    this.message = null;
+                    axios.post(route('updateUserNew'), {
+                        nom: this.nom.trim(),
+                        prenom: this.prenom.trim(),
+                        email: this.email,
+                        matricule: this.matricule,
+                        entreprises: this.entreprises,
+                        role: this.roleName,
+                        tableau: this.check[0]
+                    }).then(response => {
+                        if (response.data.success) {
+                            this.hiddenUp();
+                            this.onLoad();
+                        } else {
+                            this.color = 'text-red-500';
+                            this.message = response.data.error
+                        }
+                    })
+                }
+            },
+
+            // Fonction pour cacher le formulaire de modification
+            hiddenUp() {
+                this.decocher();
+                this.color = null;
+                this.message = null;
+                this.nom = null;
+                this.prenom = null;
+                this.matricule = null;
+                this.email = null;
+                this.roleName = null;
+                this.entreprises = null;
+                formHiddenUp.classList.add("hidden");
+                menuMiniUp.classList.add("hidden");
+            },
+
+            // Fonction pour faire la pagination
+            paginations(el) {
+                this.variableBool1 = !this.variableBool1;
+                axios.get(route("paginationUser", {
+                    number: el
+                })).then(response => {
+                    this.users = response.data.users;
+                })
+            },
+
             // Fonction pour décocher
             decocher() {
                 this.check = [];
@@ -318,7 +445,23 @@ export default
                 this.variableBool = !this.variableBool;
                 if (this.check.length === 0) {
                     Swal.fire({
-                        text: response.data.error,
+                        text: "Veuillez sélectionner un utilisateur !!!",
+                        icon: 'error',
+                        confirmButtonColor: "red",
+                    })
+                } else if (this.check.length === 1) {
+                    this.nom = this.check[0].lastname;
+                    this.prenom = this.check[0].firstname;
+                    this.email = this.check[0].email;
+                    this.matricule = this.check[0].matricule;
+                    this.entreprises = this.check[0].idAdm;
+                    this.roleName = this.check[0].idRoleName;
+                    formHiddenUp.classList.remove("hidden");
+                    menuMiniUp.classList.remove("hidden");
+                } else {
+                    this.decocher();
+                    Swal.fire({
+                        text: "Vous ne pouvez pas sélectionner plusieurs personnes à la fois !!!",
                         icon: 'error',
                         confirmButtonColor: "red",
                     })
@@ -447,6 +590,7 @@ export default
                     this.users = response.data.users;
                     this.roles = response.data.roles;
                     this.entreprise = response.data.entreprise;
+                    this.pagination = response.data.count;
                 })
             },
         },
